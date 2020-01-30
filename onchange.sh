@@ -11,3 +11,4 @@ case $extension in
 	go vet
 	;;
 esac
+go run ./cmd/f

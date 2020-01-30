@@ -14,12 +14,14 @@ import (
 func NewTerm() *Term {
 	return &Term{
 		Logger: fox.NewSyncLog(os.Stdout).FilterEmpty(),
+		exit:   os.Exit,
 	}
 }
 
 type Term struct {
 	fox.Logger
 	Verbose bool
+	exit    func(int)
 }
 
 func (t *Term) Log(p ...interface{}) {
@@ -44,7 +46,7 @@ func (t *Term) Sh(cli string) {
 			fmt.Println(ColorWorkingDir(line))
 		}
 		fmt.Println(err)
-		os.Exit(1)
+		t.exit(1)
 	}
 	nice := bytes.TrimSpace(out)
 	if len(nice) > 0 {

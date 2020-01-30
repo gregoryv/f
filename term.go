@@ -50,7 +50,7 @@ func (t *Term) Sh(cli string) {
 	if len(nice) > 0 {
 		fmt.Println(string(nice))
 	}
-	t.Log("# ", cli, time.Since(start))
+	t.Log("# ", cli, " ", time.Since(start))
 }
 
 func ColorWorkingDir(line []byte) string {

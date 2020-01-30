@@ -18,6 +18,8 @@ func TestTerm(t *testing.T) {
 
 	m.Shf("%s", "touch term_test.go")
 	bad(t, unknownCommand(m))
+	// output is trimmed
+	m.Sh("echo '  hello '")
 }
 
 func loggerSet(m *Term) error {

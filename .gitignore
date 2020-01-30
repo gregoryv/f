@@ -1,3 +1,5 @@
 *~
 .#*
 onchange.sh
+.onchange.go
+.coverage

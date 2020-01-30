@@ -7,10 +7,25 @@ import (
 	"os/exec"
 	"strings"
 	"time"
+
+	"github.com/gregoryv/fox"
 )
 
+func NewF() *F {
+	return &F{
+		Logger: fox.NewSyncLog(os.Stdout).FilterEmpty(),
+	}
+}
+
 type F struct {
+	fox.Logger
 	Verbose bool
+}
+
+func (f *F) Log(p ...interface{}) {
+	if f.Verbose {
+		f.Logger.Log(p...)
+	}
 }
 
 func (f *F) Shf(format string, args ...interface{}) {
@@ -19,9 +34,8 @@ func (f *F) Shf(format string, args ...interface{}) {
 
 func (f *F) Sh(cli string) {
 	start := time.Now()
-	if f.Verbose {
-		fmt.Println("# ", cli)
-	}
+	f.Log("# ", cli)
+
 	p := strings.Split(cli, " ")
 	out, err := exec.Command(p[0], p[1:]...).CombinedOutput()
 	if err != nil {
@@ -36,7 +50,7 @@ func (f *F) Sh(cli string) {
 	if len(nice) > 0 {
 		fmt.Println(string(nice))
 	}
-	fmt.Println("# ", cli, time.Since(start))
+	f.Log("# ", cli, time.Since(start))
 }
 
 func ColorWorkingDir(line []byte) string {

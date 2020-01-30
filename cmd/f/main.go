@@ -1,13 +1,15 @@
 package main
 
 import (
-	"fmt"
 	"os"
+
+	"github.com/gregoryv/f"
 )
 
 func main() {
 	args := NewArgs(os.Args[1:])
-	fmt.Println(args.action, args.path)
+	f := &f.F{}
+	f.Shf("%s %s", args.action, args.path)
 }
 
 func NewArgs(in []string) *args {

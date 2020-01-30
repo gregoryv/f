@@ -11,30 +11,30 @@ import (
 	"github.com/gregoryv/fox"
 )
 
-func NewF() *F {
-	return &F{
+func NewTerm() *Term {
+	return &Term{
 		Logger: fox.NewSyncLog(os.Stdout).FilterEmpty(),
 	}
 }
 
-type F struct {
+type Term struct {
 	fox.Logger
 	Verbose bool
 }
 
-func (f *F) Log(p ...interface{}) {
-	if f.Verbose {
-		f.Logger.Log(p...)
+func (t *Term) Log(p ...interface{}) {
+	if t.Verbose {
+		t.Logger.Log(p...)
 	}
 }
 
-func (f *F) Shf(format string, args ...interface{}) {
-	f.Sh(fmt.Sprintf(format, args...))
+func (t *Term) Shf(format string, args ...interface{}) {
+	t.Sh(fmt.Sprintf(format, args...))
 }
 
-func (f *F) Sh(cli string) {
+func (t *Term) Sh(cli string) {
 	start := time.Now()
-	f.Log("# ", cli)
+	t.Log("# ", cli)
 
 	p := strings.Split(cli, " ")
 	out, err := exec.Command(p[0], p[1:]...).CombinedOutput()
@@ -50,7 +50,7 @@ func (f *F) Sh(cli string) {
 	if len(nice) > 0 {
 		fmt.Println(string(nice))
 	}
-	f.Log("# ", cli, time.Since(start))
+	t.Log("# ", cli, time.Since(start))
 }
 
 func ColorWorkingDir(line []byte) string {

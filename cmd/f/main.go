@@ -8,12 +8,16 @@ import (
 
 func main() {
 	args := NewArgs(os.Args[1:])
-	f := &f.F{}
-	f.Shf("%s %s", args.action, args.path)
+	f := f.NewTerm()
+	format, found := args.Format()
+	if !found {
+		return
+	}
+	f.Shf(format, args.path)
 }
 
 func NewArgs(in []string) *args {
-	a := args{path: ".", action: "ls"}
+	a := args{path: "."}
 	if len(in) > 0 {
 		a.path = in[0]
 		if len(in) > 1 {
@@ -30,4 +34,17 @@ type args struct {
 	filename  string
 	extension string
 	nameonly  string
+}
+
+func (a *args) Format() (string, bool) {
+	format, found := shellFormats[a.action]
+	if !found {
+		return "", false
+	}
+	return format, true
+}
+
+var shellFormats = map[string]string{
+	"":  "ls %s",
+	"f": "ls -al %s",
 }

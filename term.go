@@ -49,7 +49,8 @@ func (t *Term) Sh(cli string) {
 		lines := bytes.Split(out, []byte("\n"))
 		for _, line := range lines {
 			s := string(line)
-			StripAndColor(&s, t.wd)
+			Color(&s, t.wd)
+			Strip(&s, t.wd)
 			fmt.Println(s)
 		}
 		fmt.Println(err)
@@ -62,19 +63,28 @@ func (t *Term) Sh(cli string) {
 	t.Log("# ", cli, " ", time.Since(start))
 }
 
-func StripAndColor(line *string, contains string) error {
+func Color(line *string, contains string) error {
 	mycode := strings.Index(*line, contains) > -1
-	stripped := strings.ReplaceAll(*line, contains, "")
 	if !mycode {
 		return notColored
 	}
-	colored := red + stripped + reset
+	colored := red + *line + reset
 	line = &colored
 	return nil
 }
 
+func Strip(line *string, part string) error {
+	stripped := strings.ReplaceAll(*line, part, "")
+	if stripped == *line {
+		return notStripped
+	}
+	line = &stripped
+	return nil
+}
+
 var (
-	red        = "\033[31m"
-	reset      = "\033[0m"
-	notColored = fmt.Errorf("not colored")
+	red         = "\033[31m"
+	reset       = "\033[0m"
+	notColored  = fmt.Errorf("not colored")
+	notStripped = fmt.Errorf("not stripped")
 )

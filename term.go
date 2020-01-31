@@ -17,7 +17,7 @@ func NewTerm() *Term {
 		exit:   os.Exit,
 	}
 	dir, _ := os.Getwd()
-	m.wd = dir
+	m.wd = dir + "/"
 	return &m
 
 }
@@ -51,6 +51,7 @@ func (t *Term) Sh(cli string) {
 			s := string(line)
 			Color(&s, t.wd)
 			Strip(&s, t.wd)
+			Color(&s, "_test.go")
 			fmt.Println(s)
 		}
 		fmt.Println(err)
@@ -64,12 +65,11 @@ func (t *Term) Sh(cli string) {
 }
 
 func Color(line *string, contains string) error {
-	mycode := strings.Index(*line, contains) > -1
-	if !mycode {
+	found := (strings.Index(*line, contains) > -1)
+	if !found {
 		return notColored
 	}
-	colored := red + *line + reset
-	line = &colored
+	*line = red + *line + reset
 	return nil
 }
 
@@ -78,7 +78,7 @@ func Strip(line *string, part string) error {
 	if stripped == *line {
 		return notStripped
 	}
-	line = &stripped
+	*line = stripped
 	return nil
 }
 

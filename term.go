@@ -12,16 +12,21 @@ import (
 )
 
 func NewTerm() *Term {
-	return &Term{
+	m := Term{
 		Logger: fox.NewSyncLog(os.Stdout).FilterEmpty(),
 		exit:   os.Exit,
 	}
+	dir, _ := os.Getwd()
+	m.wd = dir
+	return &m
+
 }
 
 type Term struct {
 	fox.Logger
 	Verbose bool
 	exit    func(int)
+	wd      string
 }
 
 func (t *Term) Log(p ...interface{}) {
@@ -43,7 +48,9 @@ func (t *Term) Sh(cli string) {
 	if err != nil {
 		lines := bytes.Split(out, []byte("\n"))
 		for _, line := range lines {
-			fmt.Println(ColorWorkingDir(line))
+			s := string(line)
+			StripAndColor(&s, t.wd)
+			fmt.Println(s)
 		}
 		fmt.Println(err)
 		t.exit(1)
@@ -55,21 +62,19 @@ func (t *Term) Sh(cli string) {
 	t.Log("# ", cli, " ", time.Since(start))
 }
 
-func ColorWorkingDir(line []byte) string {
-	dir, err := os.Getwd()
-	if err != nil {
-		return string(line)
-	}
-	s := string(line)
-	mycode := strings.Index(s, dir) > -1
-	s = strings.ReplaceAll(s, dir, "")
+func StripAndColor(line *string, contains string) error {
+	mycode := strings.Index(*line, contains) > -1
+	stripped := strings.ReplaceAll(*line, contains, "")
 	if !mycode {
-		return s
+		return notColored
 	}
-	return red + s + reset
+	colored := red + stripped + reset
+	line = &colored
+	return nil
 }
 
 var (
-	red   = "\033[31m"
-	reset = "\033[0m"
+	red        = "\033[31m"
+	reset      = "\033[0m"
+	notColored = fmt.Errorf("not colored")
 )

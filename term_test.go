@@ -20,6 +20,9 @@ func TestTerm(t *testing.T) {
 	bad(t, unknownCommand(m))
 	// output is trimmed
 	m.Sh("echo '  hello '")
+	line := "/home/john"
+	ok(t, StripAndColor(&line, "/home"))
+	bad(t, StripAndColor(&line, "/etc"))
 }
 
 func loggerSet(m *Term) error {

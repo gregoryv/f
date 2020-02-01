@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path"
 	"strings"
 	"time"
 
@@ -16,23 +17,15 @@ func NewTerm() *Term {
 		Logger: fox.NewSyncLog(os.Stdout).FilterEmpty(),
 		exit:   os.Exit,
 	}
-	m.errFuncs = []errLiner{
+	m.errFuncs = []liner{
 		func(s *string) {
-			var cli string
-			if EmacsOpen(&cli, *s) == nil {
-				// Only open files within the working directory
-				if strings.Index(cli, m.wd) > -1 {
-					// don't use m.Sh as recursive errors are bad
-					c := strings.Split(cli, " ")
-					exec.Command(c[0], c[1:]...).Start()
-				}
-			}
+			OpenError(s, m.wd)
 		},
 		func(s *string) { Color(s, m.wd) },
-		func(s *string) { Strip(s, m.wd) },
+		//		func(s *string) { Strip(s, m.wd) },
 		func(s *string) { Color(s, "_test.go") },
 	}
-
+	m.okFuncs = []liner{}
 	dir, _ := os.Getwd()
 	m.wd = dir + "/"
 	return &m
@@ -43,10 +36,12 @@ type Term struct {
 	Verbose  bool
 	exit     func(int)
 	wd       string
-	errFuncs []errLiner
+	errFuncs []liner
+	okFuncs  []liner
 }
 
-type errLiner func(*string)
+// liner funcs modify an output line
+type liner func(*string)
 
 func (m *Term) Log(p ...interface{}) {
 	if m.Verbose {
@@ -65,22 +60,23 @@ func (m *Term) Sh(cli string) error {
 	p := strings.Split(cli, " ")
 	out, err := exec.Command(p[0], p[1:]...).CombinedOutput()
 	if err != nil {
-		m.handleErrLines(out)
+		m.adaptOutput(out, m.errFuncs)
+		m.exit(1)
 		return err
 	}
 	nice := bytes.TrimSpace(out)
 	if len(nice) > 0 {
-		fmt.Println(string(nice))
+		m.adaptOutput(nice, m.okFuncs)
 	}
 	m.Log("# ", cli, " ", time.Since(start))
 	return nil
 }
 
-func (m *Term) handleErrLines(out []byte) {
+func (m *Term) adaptOutput(out []byte, liners []liner) {
 	lines := bytes.Split(out, []byte("\n"))
 	for _, line := range lines {
 		s := string(line)
-		for _, fn := range m.errFuncs {
+		for _, fn := range liners {
 			fn(&s)
 		}
 		fmt.Println(s)
@@ -102,6 +98,24 @@ func Strip(line *string, part string) error {
 		return notStripped
 	}
 	*line = stripped
+	return nil
+}
+
+func OpenError(s *string, wd string) error {
+	var cli string
+	err := EmacsOpen(&cli, *s)
+	if err != nil {
+		return err
+	}
+	c := strings.Split(cli, " ")
+	// emacsclient -n +lineno path
+	_, err = os.Stat(path.Join(wd, c[3]))
+	isLocal := (err == nil)
+	// Only open files within the working directory
+	if strings.Index(cli, wd) > -1 || isLocal {
+		// don't use m.Sh as recursive errors are bad
+		exec.Command(c[0], c[1:]...).Run()
+	}
 	return nil
 }
 

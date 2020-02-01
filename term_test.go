@@ -13,6 +13,8 @@ func TestTerm(t *testing.T) {
 	ok(t, loggerSet(m))
 	ok(t, silentLog(m))
 
+	m.Logger = t
+	m.exit = func(int) {}
 	m.Verbose = true
 	bad(t, silentLog(m))
 	m.Shf("%s", "touch term_test.go")

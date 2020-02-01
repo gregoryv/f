@@ -15,17 +15,15 @@ func TidyImports(m *Term, a *Args) error {
 
 var InvalidExtension = fmt.Errorf("invalid extension")
 
-// EmacsOpen parses v for file/path:LINENO and returns cli to open
+// EmacsOpen parses v for file/path:LINENO and sets cli to open
 func EmacsOpen(cli *string, v string) error {
 	v = strings.TrimSpace(v)
-	parts := strings.Split(v, ":")
+	first := strings.Split(v, " ")[0]
+	parts := strings.Split(first, ":")
 	if len(parts) > 1 {
-		p := parts[0]
-		if p[0] != '/' {
-			return NotFound
-		}
-		lineno := strings.Split(parts[1], " ")[0]
-		*cli = fmt.Sprintf("emacsclient -n +%s %s", lineno, parts[0])
+		lineno := parts[1]
+		path := parts[0]
+		*cli = fmt.Sprintf("emacsclient -n +%s %s", lineno, path)
 		return nil
 	}
 	return NotFound

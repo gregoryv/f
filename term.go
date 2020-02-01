@@ -17,6 +17,14 @@ func NewTerm() *Term {
 		exit:   os.Exit,
 	}
 	m.errFuncs = []errLiner{
+		func(s *string) {
+			var cli string
+			if EmacsOpen(&cli, *s) == nil {
+				// don't use m.Sh as recursive errors are bad
+				c := strings.Split(cli, " ")
+				exec.Command(c[0], c[1:]...).Start()
+			}
+		},
 		func(s *string) { Color(s, m.wd) },
 		func(s *string) { Strip(s, m.wd) },
 		func(s *string) { Color(s, "_test.go") },

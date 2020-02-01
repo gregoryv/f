@@ -20,7 +20,7 @@ func EmacsOpen(cli *string, v string) error {
 	v = strings.TrimSpace(v)
 	parts := strings.Split(v, ":")
 	if len(parts) > 1 {
-		*cli = fmt.Sprintf("emacsclient +%s %s", parts[1], parts[0])
+		*cli = fmt.Sprintf("emacsclient -n +%s %s", parts[1], parts[0])
 		return nil
 	}
 	return NotFound

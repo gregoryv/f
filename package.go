@@ -1,12 +1,45 @@
 package f
 
 import (
-	"os"
-	"path"
-	"os/exec"
 	"fmt"
+	"os"
+	"os/exec"
+	"path"
 	"strings"
 )
+
+func OpenError(cmd *exec.Cmd, line, wd string) error {
+	var cli string
+	err := EmacsOpen(&cli, line)
+	if err != nil {
+		return err
+	}
+	c := strings.Split(cli, " ")
+	// emacsclient -n +lineno path
+	_, err = os.Stat(path.Join(wd, c[3]))
+	isLocal := (err == nil)
+	// Only open files within the working directory
+	if strings.Index(cli, wd) > -1 || isLocal {
+		// don't use m.Sh as recursive errors are bad
+		newCmd := exec.Command(c[0], c[1:]...)
+		*cmd = *newCmd
+	}
+	return nil
+}
+
+// EmacsOpen parses v for file/path:LINENO and sets cli to open
+func EmacsOpen(cli *string, v string) error {
+	v = strings.TrimSpace(v)
+	first := strings.Split(v, " ")[0]
+	parts := strings.Split(first, ":")
+	if len(parts) > 1 {
+		lineno := parts[1]
+		path := parts[0]
+		*cli = fmt.Sprintf("emacsclient -n +%s %s", lineno, path)
+		return nil
+	}
+	return NotFound
+}
 
 func Color(line *string, contains string) error {
 	found := (strings.Index(*line, contains) > -1)
@@ -26,35 +59,17 @@ func Strip(line *string, part string) error {
 	return nil
 }
 
-func OpenError(line, wd string) error {
-	var cli string
-	err := EmacsOpen(&cli, line)
-	if err != nil {
-		return err
-	}
-	c := strings.Split(cli, " ")
-	// emacsclient -n +lineno path
-	_, err = os.Stat(path.Join(wd, c[3]))
-	isLocal := (err == nil)
-	// Only open files within the working directory
-	if strings.Index(cli, wd) > -1 || isLocal {
-		// don't use m.Sh as recursive errors are bad
-		exec.Command(c[0], c[1:]...).Run()
-	}
-	return nil
-}
-
 var (
-	red         = "\033[31m"
-	reset       = "\033[0m"
+	red   = "\033[31m"
+	reset = "\033[0m"
 )
 
 var (
-	notColored  = fmt.Errorf("not colored")
-	notStripped = fmt.Errorf("not stripped")
+	notColored       = fmt.Errorf("not colored")
+	notStripped      = fmt.Errorf("not stripped")
 	InvalidExtension = fmt.Errorf("invalid extension")
+	NotFound         = fmt.Errorf("not found")
 )
-
 
 func TidyImports(m *Term, a *Args) error {
 	if a.Ext != ".go" {
@@ -63,19 +78,3 @@ func TidyImports(m *Term, a *Args) error {
 	m.Shf("goimports -w %s", a.Path)
 	return nil
 }
-
-// EmacsOpen parses v for file/path:LINENO and sets cli to open
-func EmacsOpen(cli *string, v string) error {
-	v = strings.TrimSpace(v)
-	first := strings.Split(v, " ")[0]
-	parts := strings.Split(first, ":")
-	if len(parts) > 1 {
-		lineno := parts[1]
-		path := parts[0]
-		*cli = fmt.Sprintf("emacsclient -n +%s %s", lineno, path)
-		return nil
-	}
-	return NotFound
-}
-
-var NotFound = fmt.Errorf("not found")

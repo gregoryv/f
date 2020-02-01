@@ -17,7 +17,14 @@ func NewTerm() *Term {
 		exit:   os.Exit,
 	}
 	m.errFuncs = []liner{
-		func(s *string) { OpenError(*s, m.wd) },
+		func(s *string) {
+			var cmd exec.Cmd
+			OpenError(&cmd, *s, m.wd)
+			if cmd.Path != "" {
+				cmd.Run()
+			}
+		},
+
 		func(s *string) { Color(s, m.wd) },
 		func(s *string) { Strip(s, m.wd) },
 		func(s *string) { Color(s, "_test.go") },

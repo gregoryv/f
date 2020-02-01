@@ -13,19 +13,19 @@ func Test_tools(t *testing.T) {
 	bad(t, TidyImports(m, &Args{Ext: ".txt"}))
 }
 
-func Test_EmacsOpen(t *testing.T) {
+func Test_EmacsClient(t *testing.T) {
 	var cli string
-	ok(t, EmacsOpen(&cli, "/file:10"))
+	ok(t, Emacsclient(&cli, "/file:10"))
 	if cli == "" {
 		t.Fail()
 	}
-	ok(t, EmacsOpen(&cli, "   file_test.go:10: error"))
+	ok(t, Emacsclient(&cli, "   file_test.go:10: error"))
 	if cli != "emacsclient -n +10 file_test.go" {
 		t.Error(cli)
 	}
 
-	bad(t, EmacsOpen(&cli, "/path/file 10"))
-	bad(t, EmacsOpen(&cli, "--- PASS: TestColor (0.00s)"))
+	bad(t, Emacsclient(&cli, "/path/file 10"))
+	bad(t, Emacsclient(&cli, "--- PASS: TestColor (0.00s)"))
 }
 
 func TestRunCmd(t *testing.T) {

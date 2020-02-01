@@ -10,7 +10,7 @@ import (
 
 func OpenError(cmd *exec.Cmd, line, wd string) error {
 	var cli string
-	err := EmacsOpen(&cli, line)
+	err := Emacsclient(&cli, line)
 	if err != nil {
 		return err
 	}
@@ -34,8 +34,8 @@ func RunCmd(cmd *exec.Cmd) error {
 	return cmd.Run()
 }
 
-// EmacsOpen parses v for file/path:LINENO and sets cli to open
-func EmacsOpen(cli *string, v string) error {
+// Emacsclient parses v for file/path:LINENO and sets cli to open
+func Emacsclient(cli *string, v string) error {
 	v = strings.TrimSpace(v)
 	first := strings.Split(v, " ")[0]
 	parts := strings.Split(first, ":")

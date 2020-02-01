@@ -27,6 +27,13 @@ func OpenError(cmd *exec.Cmd, line, wd string) error {
 	return nil
 }
 
+func RunCmd(cmd *exec.Cmd) error {
+	if cmd == nil || cmd.Path == "" {
+		return MissingCommand
+	}
+	return cmd.Run()
+}
+
 // EmacsOpen parses v for file/path:LINENO and sets cli to open
 func EmacsOpen(cli *string, v string) error {
 	v = strings.TrimSpace(v)
@@ -69,6 +76,7 @@ var (
 	notStripped      = fmt.Errorf("not stripped")
 	InvalidExtension = fmt.Errorf("invalid extension")
 	NotFound         = fmt.Errorf("not found")
+	MissingCommand   = fmt.Errorf("missing command")
 )
 
 func TidyImports(m *Term, a *Args) error {

@@ -20,9 +20,7 @@ func NewTerm() *Term {
 		func(s *string) {
 			var cmd exec.Cmd
 			OpenError(&cmd, *s, m.wd)
-			if cmd.Path != "" {
-				cmd.Run()
-			}
+			RunCmd(&cmd)
 		},
 
 		func(s *string) { Color(s, m.wd) },

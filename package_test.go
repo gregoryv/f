@@ -1,6 +1,7 @@
 package f
 
 import (
+	"os/exec"
 	"testing"
 )
 
@@ -23,4 +24,8 @@ func Test_EmacsOpen(t *testing.T) {
 
 	bad(t, EmacsOpen(&cli, "/path/file 10"))
 	bad(t, EmacsOpen(&cli, "--- PASS: TestColor (0.00s)"))
+}
+
+func TestRunCmd(t *testing.T) {
+	ok(t, RunCmd(exec.Command("echo")))
 }

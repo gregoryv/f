@@ -5,8 +5,11 @@ import (
 )
 
 func TestNewArgs(t *testing.T) {
-	var f string
 	ok, _k := assert(t)
-	ok(NewArgs(".").Format(&f))
-	_k(NewArgs(".", "no such command").Format(&f))
+
+	var fn Action
+	ok(NewArgs(".").UseAction(&fn))
+	fn(NewTerm())
+
+	_k(NewArgs(".", "oups").UseAction(&fn))
 }

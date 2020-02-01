@@ -4,8 +4,8 @@ import "path"
 
 func NewArgs(in ...string) *Args {
 	a := Args{
-		Path:     ".",
-		action:   "ls",
+		Path:   ".",
+		action: "ls",
 	}
 	set(&a.Path, in, 0)
 	set(&a.action, in, 1)
@@ -33,6 +33,21 @@ type Args struct {
 	nameonly string
 }
 
+func (a *Args) UseAction(fn *Action) error {
+	var f string
+	err := a.Format(&f)
+	if err == nil {
+		*fn = func(m *Term) {
+			m.Shf(f, a.Path)
+		}
+		return nil
+	}
+
+	return NotFound
+}
+
+type Action func(*Term)
+
 func (a *Args) Format(format *string) error {
 	f, found := shellFormats[a.action]
 	if !found {
@@ -45,4 +60,5 @@ func (a *Args) Format(format *string) error {
 var shellFormats = map[string]string{
 	"ls": "ls %s",
 	"f":  "ls -al %s",
+	"e":  "emacsclient -n %s",
 }

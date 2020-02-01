@@ -8,11 +8,11 @@ import (
 
 func main() {
 	args := f.NewArgs(os.Args[1:]...)
-	f := f.NewTerm()
-	var format string
-	err := args.Format(&format)
+	var fn f.Action
+	err := args.UseAction(&fn)
 	if err != nil {
 		return
 	}
-	f.Shf(format, args.Path)
+	m := f.NewTerm()
+	fn(m)
 }

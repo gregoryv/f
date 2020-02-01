@@ -1,7 +1,9 @@
 package f
 
 import (
+	"os"
 	"os/exec"
+	"path"
 	"testing"
 )
 
@@ -28,4 +30,12 @@ func Test_EmacsOpen(t *testing.T) {
 
 func TestRunCmd(t *testing.T) {
 	ok(t, RunCmd(exec.Command("echo")))
+}
+
+func Test_OpenError(t *testing.T) {
+	var cmd exec.Cmd
+	wd, _ := os.Getwd()
+	line := path.Join(wd, "package_test.go:10")
+	ok(t, OpenError(&cmd, line, wd))
+	bad(t, OpenError(&cmd, "", wd))
 }

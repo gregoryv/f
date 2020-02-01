@@ -7,10 +7,11 @@ import (
 )
 
 func TestNewArgs(t *testing.T) {
-	ok(t, action(".", "ls"))
-	ok(t, action(". f", "f"))
-	ok(t, format("."))
-	bad(t, format(". ljlj"))
+	ok, bad := assert(t)
+	ok(action(".", "ls"))
+	ok(action(". f", "f"))
+	ok(format("."))
+	bad(format(". ljlj"))
 }
 
 func format(in string) error {

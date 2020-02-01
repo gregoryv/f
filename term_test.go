@@ -10,30 +10,38 @@ import (
 
 func TestTerm(t *testing.T) {
 	m := NewTerm()
-	ok(t, loggerSet(m))
-	ok(t, silentLog(m))
+	ok := assertOk(t)
+	ok(loggerSet(m))
+	ok(silentLog(m))
 
 	m.Logger = t
 	m.exit = func(int) {}
 	m.Verbose = true
-	bad(t, silentLog(m))
+	bad := assertBad(t)
+	bad(silentLog(m))
 	m.Shf("%s", "touch term_test.go")
-	bad(t, m.Shf("%s", "hubladuble"))
+	bad(m.Shf("%s", "hubladuble"))
 	// output is trimmed
 	m.Sh("echo '  hello '")
 }
 
 func TestColor(t *testing.T) {
 	line := "/home/john"
-	ok(t, Color(&line, "/home"))
-	bad(t, Color(&line, "/etc"))
+	ok := assertOk(t)
+	ok(Color(&line, "/home"))
+
+	bad := assertBad(t)
+	bad(Color(&line, "/etc"))
 }
 
 func TestStrip(t *testing.T) {
 	line := "/home/john"
-	ok(t, Strip(&line, "/home"))
+	ok := assertOk(t)
+	ok(Strip(&line, "/home"))
+
 	line2 := "/home/john"
-	bad(t, Strip(&line2, "/etc"))
+	bad := assertBad(t)
+	bad(Strip(&line2, "/etc"))
 }
 
 func loggerSet(m *Term) error {

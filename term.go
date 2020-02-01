@@ -16,18 +16,26 @@ func NewTerm() *Term {
 		Logger: fox.NewSyncLog(os.Stdout).FilterEmpty(),
 		exit:   os.Exit,
 	}
+	m.errFuncs = []errLiner{
+		func(s *string) { Color(s, m.wd) },
+		func(s *string) { Strip(s, m.wd) },
+		func(s *string) { Color(s, "_test.go") },
+	}
+
 	dir, _ := os.Getwd()
 	m.wd = dir + "/"
 	return &m
-
 }
 
 type Term struct {
 	fox.Logger
-	Verbose bool
-	exit    func(int)
-	wd      string
+	Verbose  bool
+	exit     func(int)
+	wd       string
+	errFuncs []errLiner
 }
+
+type errLiner func(*string)
 
 func (t *Term) Log(p ...interface{}) {
 	if t.Verbose {
@@ -49,9 +57,9 @@ func (t *Term) Sh(cli string) error {
 		lines := bytes.Split(out, []byte("\n"))
 		for _, line := range lines {
 			s := string(line)
-			Color(&s, t.wd)
-			Strip(&s, t.wd)
-			Color(&s, "_test.go")
+			for _, fn := range t.errFuncs {
+				fn(&s)
+			}
 			fmt.Println(s)
 		}
 		return err

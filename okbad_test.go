@@ -8,13 +8,21 @@ import (
 func ok(t *testing.T, err error, msg ...string) {
 	t.Helper()
 	if err != nil {
-		t.Error(strings.Join(msg, " ")+":", err)
+		if len(msg) > 0 {
+			t.Error(strings.Join(msg, " ")+":", err)
+			return
+		}
+		t.Error(err)
 	}
 }
 
 func bad(t *testing.T, err error, msg ...string) {
 	t.Helper()
 	if err == nil {
-		t.Error(strings.Join(msg, " "), "should fail")
+		if len(msg) > 0 {
+			t.Error(strings.Join(msg, " "), "should fail")
+			return
+		}
+		t.Error("should fail")
 	}
 }

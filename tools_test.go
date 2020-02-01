@@ -12,10 +12,9 @@ func Test_tools(t *testing.T) {
 
 func Test_EmacsOpen(t *testing.T) {
 	var cli string
-	ok(t, EmacsOpen(&cli, "file:10"))
+	ok(t, EmacsOpen(&cli, "/file:10"))
 	if cli == "" {
 		t.Fail()
 	}
-
 	bad(t, EmacsOpen(&cli, "/path/file 10"))
 }

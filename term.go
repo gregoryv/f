@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"path"
 	"strings"
 	"time"
 
@@ -78,46 +77,3 @@ func (m *Term) adaptOutput(out []byte, liners []liner) {
 		fmt.Println(s)
 	}
 }
-
-func Color(line *string, contains string) error {
-	found := (strings.Index(*line, contains) > -1)
-	if !found {
-		return notColored
-	}
-	*line = red + *line + reset
-	return nil
-}
-
-func Strip(line *string, part string) error {
-	stripped := strings.ReplaceAll(*line, part, "")
-	if stripped == *line {
-		return notStripped
-	}
-	*line = stripped
-	return nil
-}
-
-func OpenError(line, wd string) error {
-	var cli string
-	err := EmacsOpen(&cli, line)
-	if err != nil {
-		return err
-	}
-	c := strings.Split(cli, " ")
-	// emacsclient -n +lineno path
-	_, err = os.Stat(path.Join(wd, c[3]))
-	isLocal := (err == nil)
-	// Only open files within the working directory
-	if strings.Index(cli, wd) > -1 || isLocal {
-		// don't use m.Sh as recursive errors are bad
-		exec.Command(c[0], c[1:]...).Run()
-	}
-	return nil
-}
-
-var (
-	red         = "\033[31m"
-	reset       = "\033[0m"
-	notColored  = fmt.Errorf("not colored")
-	notStripped = fmt.Errorf("not stripped")
-)

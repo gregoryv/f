@@ -6,7 +6,7 @@ import (
 
 func Test_tools(t *testing.T) {
 	m := NewTerm()
-	ok(t, TidyImports(m, &Args{Ext: ".go", Path: "tools_test.go"}))
+	ok(t, TidyImports(m, &Args{Ext: ".go", Path: "package_test.go"}))
 	bad(t, TidyImports(m, &Args{Ext: ".txt"}))
 }
 

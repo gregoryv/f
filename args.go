@@ -32,12 +32,13 @@ type Args struct {
 	nameonly string
 }
 
-func (a *Args) Format() (string, bool) {
-	format, found := shellFormats[a.action]
+func (a *Args) Format(format *string) error {
+	f, found := shellFormats[a.action]
 	if !found {
-		return "", false
+		return NotFound
 	}
-	return format, true
+	*format = f
+	return nil
 }
 
 var shellFormats = map[string]string{

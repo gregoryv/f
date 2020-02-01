@@ -9,8 +9,9 @@ import (
 func main() {
 	args := f.NewArgs(os.Args[1:])
 	f := f.NewTerm()
-	format, found := args.Format()
-	if !found {
+	var format string
+	err := args.Format(&format)
+	if err != nil {
 		return
 	}
 	f.Shf(format, args.Path)

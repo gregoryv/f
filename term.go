@@ -18,11 +18,9 @@ func NewTerm() *Term {
 		exit:   os.Exit,
 	}
 	m.errFuncs = []liner{
-		func(s *string) {
-			OpenError(s, m.wd)
-		},
+		func(s *string) { OpenError(*s, m.wd) },
 		func(s *string) { Color(s, m.wd) },
-		//		func(s *string) { Strip(s, m.wd) },
+		func(s *string) { Strip(s, m.wd) },
 		func(s *string) { Color(s, "_test.go") },
 	}
 	m.okFuncs = []liner{}
@@ -55,8 +53,6 @@ func (m *Term) Shf(format string, args ...interface{}) error {
 
 func (m *Term) Sh(cli string) error {
 	start := time.Now()
-	m.Log("# ", cli)
-
 	p := strings.Split(cli, " ")
 	out, err := exec.Command(p[0], p[1:]...).CombinedOutput()
 	if err != nil {
@@ -101,9 +97,9 @@ func Strip(line *string, part string) error {
 	return nil
 }
 
-func OpenError(s *string, wd string) error {
+func OpenError(line, wd string) error {
 	var cli string
-	err := EmacsOpen(&cli, *s)
+	err := EmacsOpen(&cli, line)
 	if err != nil {
 		return err
 	}

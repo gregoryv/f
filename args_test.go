@@ -30,17 +30,3 @@ func action(in string, exp string) error {
 	}
 	return nil
 }
-
-func ok(t *testing.T, err error) {
-	t.Helper()
-	if err != nil {
-		t.Error(err)
-	}
-}
-
-func bad(t *testing.T, err error) {
-	t.Helper()
-	if err == nil {
-		t.Error("should fail")
-	}
-}

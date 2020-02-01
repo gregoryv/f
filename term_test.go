@@ -12,12 +12,13 @@ func TestTerm(t *testing.T) {
 	m := NewTerm()
 	ok(t, loggerSet(m))
 	ok(t, silentLog(m))
+	ok(t, TidyImports(m, NewArgs([]string{"term_test.go"})))
 
 	m.Verbose = true
 	bad(t, silentLog(m))
-
+	bad(t, TidyImports(m, NewArgs([]string{"term_test.txt"})))
 	m.Shf("%s", "touch term_test.go")
-	bad(t, unknownCommand(m))
+	bad(t, m.Shf("%s", "hubladuble"))
 	// output is trimmed
 	m.Sh("echo '  hello '")
 }
@@ -50,16 +51,6 @@ func silentLog(m *Term) error {
 	got := buf.String()
 	if got != "" {
 		return fmt.Errorf("Default Verbose should be silent")
-	}
-	return nil
-}
-
-func unknownCommand(m *Term) error {
-	var failed bool
-	m.exit = func(x int) { failed = true }
-	m.Shf("%s", "hubladuble")
-	if failed {
-		return fmt.Errorf("did not fail when executing unknown command")
 	}
 	return nil
 }

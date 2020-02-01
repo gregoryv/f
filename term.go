@@ -35,11 +35,11 @@ func (t *Term) Log(p ...interface{}) {
 	}
 }
 
-func (t *Term) Shf(format string, args ...interface{}) {
-	t.Sh(fmt.Sprintf(format, args...))
+func (t *Term) Shf(format string, args ...interface{}) error {
+	return t.Sh(fmt.Sprintf(format, args...))
 }
 
-func (t *Term) Sh(cli string) {
+func (t *Term) Sh(cli string) error {
 	start := time.Now()
 	t.Log("# ", cli)
 
@@ -54,14 +54,14 @@ func (t *Term) Sh(cli string) {
 			Color(&s, "_test.go")
 			fmt.Println(s)
 		}
-		fmt.Println(err)
-		t.exit(1)
+		return err
 	}
 	nice := bytes.TrimSpace(out)
 	if len(nice) > 0 {
 		fmt.Println(string(nice))
 	}
 	t.Log("# ", cli, " ", time.Since(start))
+	return nil
 }
 
 func Color(line *string, contains string) error {

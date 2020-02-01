@@ -8,11 +8,9 @@ import (
 
 func main() {
 	args := f.NewArgs(os.Args[1:]...)
-	var fn f.Action
-	err := args.UseAction(&fn)
-	if err != nil {
+	var act f.Action
+	if args.UseAction(&act) != nil {
 		return
 	}
-	m := f.NewTerm()
-	fn(m)
+	act(f.NewTerm())
 }

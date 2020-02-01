@@ -37,39 +37,43 @@ type Term struct {
 
 type errLiner func(*string)
 
-func (t *Term) Log(p ...interface{}) {
-	if t.Verbose {
-		t.Logger.Log(p...)
+func (m *Term) Log(p ...interface{}) {
+	if m.Verbose {
+		m.Logger.Log(p...)
 	}
 }
 
-func (t *Term) Shf(format string, args ...interface{}) error {
-	return t.Sh(fmt.Sprintf(format, args...))
+func (m *Term) Shf(format string, args ...interface{}) error {
+	return m.Sh(fmt.Sprintf(format, args...))
 }
 
-func (t *Term) Sh(cli string) error {
+func (m *Term) Sh(cli string) error {
 	start := time.Now()
-	t.Log("# ", cli)
+	m.Log("# ", cli)
 
 	p := strings.Split(cli, " ")
 	out, err := exec.Command(p[0], p[1:]...).CombinedOutput()
 	if err != nil {
-		lines := bytes.Split(out, []byte("\n"))
-		for _, line := range lines {
-			s := string(line)
-			for _, fn := range t.errFuncs {
-				fn(&s)
-			}
-			fmt.Println(s)
-		}
+		m.handleErrLines(out)
 		return err
 	}
 	nice := bytes.TrimSpace(out)
 	if len(nice) > 0 {
 		fmt.Println(string(nice))
 	}
-	t.Log("# ", cli, " ", time.Since(start))
+	m.Log("# ", cli, " ", time.Since(start))
 	return nil
+}
+
+func (m *Term) handleErrLines(out []byte) {
+	lines := bytes.Split(out, []byte("\n"))
+	for _, line := range lines {
+		s := string(line)
+		for _, fn := range m.errFuncs {
+			fn(&s)
+		}
+		fmt.Println(s)
+	}
 }
 
 func Color(line *string, contains string) error {

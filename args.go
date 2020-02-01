@@ -2,25 +2,26 @@ package f
 
 import "path"
 
-func NewArgs(in values) *Args {
-	p := in.get(0, ".")
+func NewArgs(in ...string) *Args {
 	a := Args{
-		Path:     p,
-		action:   in.get(1, "ls"),
-		dir:      path.Dir(p),
-		Ext:      path.Ext(p),
-		nameonly: path.Base(p),
+		Path:     ".",
+		action:   "ls",
 	}
+	set(&a.Path, in, 0)
+	set(&a.action, in, 1)
+	p := a.Path
+	a.dir = path.Dir(p)
+	a.Ext = path.Ext(p)
+	a.nameonly = path.Base(p)
 	return &a
 }
 
-type values []string
-
-func (v values) get(i int, def string) string {
-	if i >= len(v) {
-		return def
+func set(v *string, in []string, i int) error {
+	if i >= len(in) {
+		return NotFound
 	}
-	return v[i]
+	*v = in[i]
+	return nil
 }
 
 type Args struct {

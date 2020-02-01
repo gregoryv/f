@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	args := f.NewArgs(os.Args[1:])
+	args := f.NewArgs(os.Args[1:]...)
 	f := f.NewTerm()
 	var format string
 	err := args.Format(&format)

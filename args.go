@@ -35,7 +35,7 @@ type Args struct {
 
 func (a *Args) UseAction(fn *Action) error {
 	var f string
-	err := a.Format(&f)
+	err := a.simple(&f)
 	if err == nil {
 		*fn = func(m *Term) {
 			m.Shf(f, a.Path)
@@ -48,8 +48,8 @@ func (a *Args) UseAction(fn *Action) error {
 
 type Action func(*Term)
 
-func (a *Args) Format(format *string) error {
-	f, found := shellFormats[a.action]
+func (a *Args) simple(format *string) error {
+	f, found := simpleActions[a.action]
 	if !found {
 		return NotFound
 	}
@@ -57,8 +57,14 @@ func (a *Args) Format(format *string) error {
 	return nil
 }
 
-var shellFormats = map[string]string{
-	"ls": "ls %s",
-	"f":  "ls -al %s",
-	"e":  "emacsclient -n %s",
+var simpleActions = map[string]string{
+	"ls":   "ls %s",
+	"f":    "ls -al %s",
+	"e":    "emacsclient -n %s",
+	"apt":  "aptitude search %s",
+	"apti": "aptitude install %s",
+	"apte": "aptitude purge %s",
+	"b":    "firefox %s",
+	"d":    "rm %s",
+	"se":   "sudo emacs -nw %s",
 }

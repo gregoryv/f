@@ -1,6 +1,7 @@
 package f
 
 import (
+	"os"
 	"os/exec"
 	"testing"
 )
@@ -31,5 +32,9 @@ func Test_OpenError(t *testing.T) {
 	var cmd exec.Cmd
 	ok, _k := assert(t)
 	ok(OpenError(&cmd, "package_test.go:10", ""))
+	wd, _ := os.Getwd()
+	ok(OpenError(&cmd, "package_test.go:37: message...", wd))
+	// to verify
+	// cmd.Run()
 	_k(OpenError(&cmd, "", ""))
 }

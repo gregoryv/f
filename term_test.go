@@ -8,6 +8,11 @@ import (
 	"github.com/gregoryv/fox"
 )
 
+func TestDefaultTerm(t *testing.T) {
+	Sh("touch term_test.go")
+	Shf("%s %s", "touch", "term_test.go")
+}
+
 func TestTerm(t *testing.T) {
 	m := NewTerm()
 	ok, _k := assert(t)

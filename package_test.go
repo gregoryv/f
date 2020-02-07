@@ -6,11 +6,10 @@ import (
 	"testing"
 )
 
-func Test_tools(t *testing.T) {
-	m := NewTerm()
+func TestTidyImports(t *testing.T) {
 	ok, _k := assert(t)
-	ok(TidyImports(m, &Args{Ext: ".go", Path: "package_test.go"}))
-	_k(TidyImports(m, &Args{Ext: ".txt"}))
+	ok(TidyImports(&Args{Ext: ".go", Path: "package_test.go"}))
+	_k(TidyImports(&Args{Ext: ".txt"}))
 }
 
 func Test_EmacsClient(t *testing.T) {

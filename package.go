@@ -8,6 +8,13 @@ import (
 	"strings"
 )
 
+var DefaultTerm = NewTerm()
+
+func Sh(cli string) error { return DefaultTerm.Sh(cli) }
+func Shf(format string, args ...interface{}) error {
+	return DefaultTerm.Shf(format, args...)
+}
+
 func OpenError(cmd *exec.Cmd, line, wd string) error {
 	var cli string
 	err := Emacsclient(&cli, line)
@@ -79,10 +86,10 @@ var (
 	MissingCommand   = fmt.Errorf("missing command")
 )
 
-func TidyImports(m *Term, a *Args) error {
+func TidyImports(a *Args) error {
 	if a.Ext != ".go" {
 		return InvalidExtension
 	}
-	m.Shf("goimports -w %s", a.Path)
+	Shf("goimports -w %s", a.Path)
 	return nil
 }

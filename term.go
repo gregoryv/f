@@ -75,7 +75,7 @@ func (m *Term) Sh(cli string) error {
 	if len(nice) > 0 {
 		m.adaptOutput(nice, m.okFuncs)
 	}
-	m.Log("# ", cli, " ", time.Since(start))
+	m.Log("# ", cli, " ", time.Since(start).Round(time.Millisecond))
 	return nil
 }
 

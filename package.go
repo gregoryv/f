@@ -89,6 +89,5 @@ func TidyImports(a *Args) error {
 	if a.Ext != ".go" {
 		return InvalidExtension
 	}
-	Shf("goimports -w %s", a.Path)
-	return nil
+	return Shf("goimports -w %s", a.Path)
 }

@@ -1,0 +1,3 @@
+ok  	github.com/gregoryv/f	0.008s	coverage: 100.0% of statements
+?   	github.com/gregoryv/f/cmd/f	[no test files]
+total:    (statements)    100.0%

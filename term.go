@@ -14,7 +14,8 @@ import (
 
 func NewTerm() *Term {
 	m := Term{
-		exit: os.Exit,
+		Logger: fox.NewSyncLog(os.Stderr).FilterEmpty(),
+		exit:   os.Exit,
 	}
 	m.SetOutput(os.Stdout)
 	m.errFuncs = []liner{
@@ -46,7 +47,6 @@ type Term struct {
 
 func (m *Term) SetOutput(w io.Writer) {
 	m.output = w
-	m.Logger = fox.NewSyncLog(w).FilterEmpty()
 }
 
 // liner funcs modify an output line

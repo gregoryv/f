@@ -86,18 +86,6 @@ func TidyImports(a *Args) error {
 	return Shf("goimports -w %s", a.Path)
 }
 
-/*
-func FilterDurations(w io.Writer, r io.Reader) error {
-	s := bufio.NewScanner(r)
-	s.Split(bufio.ScanWords)
-	for s.Scan() {
-		word := s.Bytes()
-		w.Write(word)
-	}
-	return nil
-}
-*/
-
 var DefaultTerm = NewTerm()
 
 func Sh(cli string) error {

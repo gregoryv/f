@@ -43,7 +43,8 @@ func TestDefaultTerm(t *testing.T) {
 	SetOutput(ioutil.Discard)
 	Verbose()
 	NoExit()
+	DefaultTerm.Verbose = false //so below output doesn't show
 	Sh("whohooo ")
-	Sh("touch term_test.go")
-	Shf("%s %s", "touch", "term_test.go")
+	Sh("touch package.go")
+	Shf("%s %s", "touch", "package_test.go")
 }

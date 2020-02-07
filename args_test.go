@@ -1,6 +1,7 @@
 package f
 
 import (
+	"io/ioutil"
 	"testing"
 )
 
@@ -9,7 +10,9 @@ func TestNewArgs(t *testing.T) {
 
 	var fn Action
 	ok(NewArgs(".").UseAction(&fn))
-	fn(NewTerm())
+	m := NewTerm()
+	m.SetOutput(ioutil.Discard)
+	fn(m)
 
 	_k(NewArgs(".", "oups").UseAction(&fn))
 }

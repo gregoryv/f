@@ -6,12 +6,6 @@ import (
 	"testing"
 )
 
-func TestTidyImports(t *testing.T) {
-	ok, _k := assert(t)
-	ok(TidyImports(&Args{Ext: ".go", Path: "package_test.go"}))
-	_k(TidyImports(&Args{Ext: ".txt"}))
-}
-
 func Test_EmacsClient(t *testing.T) {
 	var cli string
 	ok, _k := assert(t)
@@ -36,4 +30,15 @@ func Test_OpenError(t *testing.T) {
 	// to verify
 	// cmd.Run()
 	_k(OpenError(&cmd, "", ""))
+}
+
+func TestTidyImports(t *testing.T) {
+	ok, _k := assert(t)
+	ok(TidyImports(&Args{Ext: ".go", Path: "package_test.go"}))
+	_k(TidyImports(&Args{Ext: ".txt"}))
+}
+
+func TestNoExit(t *testing.T) {
+	NoExit()
+	Sh("whohooo ")
 }

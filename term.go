@@ -45,9 +45,8 @@ type Term struct {
 	okFuncs  []liner
 }
 
-func (m *Term) SetOutput(w io.Writer) {
-	m.output = w
-}
+func (m *Term) SetOutput(w io.Writer) { m.output = w }
+func (m *Term) SetExit(fn func(int))  { m.exit = fn }
 
 // liner funcs modify an output line
 type liner func(*string)

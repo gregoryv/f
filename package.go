@@ -91,3 +91,5 @@ func TidyImports(a *Args) error {
 	}
 	return Shf("goimports -w %s", a.Path)
 }
+
+func NoExit() { DefaultTerm.SetExit(func(int) {}) }

@@ -2,18 +2,12 @@ package f
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path"
 	"strings"
 )
-
-var DefaultTerm = NewTerm()
-
-func Sh(cli string) error { return DefaultTerm.Sh(cli) }
-func Shf(format string, args ...interface{}) error {
-	return DefaultTerm.Shf(format, args...)
-}
 
 func OpenError(cmd *exec.Cmd, line, wd string) error {
 	var cli string
@@ -92,4 +86,36 @@ func TidyImports(a *Args) error {
 	return Shf("goimports -w %s", a.Path)
 }
 
-func NoExit() { DefaultTerm.SetExit(func(int) {}) }
+/*
+func FilterDurations(w io.Writer, r io.Reader) error {
+	s := bufio.NewScanner(r)
+	s.Split(bufio.ScanWords)
+	for s.Scan() {
+		word := s.Bytes()
+		w.Write(word)
+	}
+	return nil
+}
+*/
+
+var DefaultTerm = NewTerm()
+
+func Sh(cli string) error {
+	return DefaultTerm.Sh(cli)
+}
+
+func Shf(format string, args ...interface{}) error {
+	return DefaultTerm.Shf(format, args...)
+}
+
+func NoExit() {
+	DefaultTerm.SetExit(func(int) {})
+}
+
+func SetOutput(w io.Writer) {
+	DefaultTerm.SetOutput(w)
+}
+
+func Verbose() {
+	DefaultTerm.Verbose = true
+}

@@ -1,6 +1,7 @@
 package f
 
 import (
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"testing"
@@ -38,7 +39,11 @@ func TestTidyImports(t *testing.T) {
 	_k(TidyImports(&Args{Ext: ".txt"}))
 }
 
-func TestNoExit(t *testing.T) {
+func TestDefaultTerm(t *testing.T) {
+	SetOutput(ioutil.Discard)
+	Verbose()
 	NoExit()
 	Sh("whohooo ")
+	Sh("touch term_test.go")
+	Shf("%s %s", "touch", "term_test.go")
 }

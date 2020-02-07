@@ -58,7 +58,7 @@ func Emacsclient(cli *string, v string) error {
 func Color(line *string, contains string) error {
 	found := (strings.Index(*line, contains) > -1)
 	if !found {
-		return notColored
+		return Unchanged
 	}
 	*line = red + *line + reset
 	return nil
@@ -67,7 +67,7 @@ func Color(line *string, contains string) error {
 func Strip(line *string, part string) error {
 	stripped := strings.ReplaceAll(*line, part, "")
 	if stripped == *line {
-		return notStripped
+		return Unchanged
 	}
 	*line = stripped
 	return nil
@@ -79,8 +79,7 @@ var (
 )
 
 var (
-	notColored       = fmt.Errorf("not colored")
-	notStripped      = fmt.Errorf("not stripped")
+	Unchanged        = fmt.Errorf("unchanged")
 	InvalidExtension = fmt.Errorf("invalid extension")
 	NotFound         = fmt.Errorf("not found")
 	MissingCommand   = fmt.Errorf("missing command")

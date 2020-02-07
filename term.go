@@ -19,11 +19,11 @@ func NewTerm() *Term {
 	}
 	m.SetOutput(os.Stdout)
 	m.errFuncs = []liner{
-		func(s *string) {
-			var cmd exec.Cmd
-			OpenError(&cmd, *s, m.wd)
-			RunCmd(&cmd)
-		},
+		/*		func(s *string) {
+				var cmd exec.Cmd
+				OpenError(&cmd, *s, m.wd)
+				RunCmd(&cmd)
+			},*/
 
 		func(s *string) { Color(s, m.wd) },
 		func(s *string) { Strip(s, m.wd) },

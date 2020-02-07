@@ -3,6 +3,7 @@ package f
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"strings"
@@ -13,9 +14,9 @@ import (
 
 func NewTerm() *Term {
 	m := Term{
-		Logger: fox.NewSyncLog(os.Stdout).FilterEmpty(),
-		exit:   os.Exit,
+		exit: os.Exit,
 	}
+	m.SetOutput(os.Stdout)
 	m.errFuncs = []liner{
 		func(s *string) {
 			var cmd exec.Cmd
@@ -35,11 +36,17 @@ func NewTerm() *Term {
 
 type Term struct {
 	fox.Logger
+	output   io.Writer
 	Verbose  bool
 	exit     func(int)
 	wd       string
 	errFuncs []liner
 	okFuncs  []liner
+}
+
+func (m *Term) SetOutput(w io.Writer) {
+	m.output = w
+	m.Logger = fox.NewSyncLog(w).FilterEmpty()
 }
 
 // liner funcs modify an output line
@@ -79,6 +86,6 @@ func (m *Term) adaptOutput(out []byte, liners []liner) {
 		for _, fn := range liners {
 			fn(&s)
 		}
-		fmt.Println(s)
+		fmt.Fprintln(m.output, s)
 	}
 }

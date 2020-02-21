@@ -35,8 +35,9 @@ func Test_OpenError(t *testing.T) {
 
 func TestTidyImports(t *testing.T) {
 	ok, _k := assert(t)
-	ok(TidyImports(&Args{Ext: ".go", Path: "package_test.go"}))
-	_k(TidyImports(&Args{Ext: ".txt"}))
+	ok(TidyImports("package_test.go"))
+	_k(TidyImports())
+	_k(TidyImports("file.txt"))
 }
 
 func TestDefaultTerm(t *testing.T) {

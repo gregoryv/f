@@ -79,7 +79,11 @@ var (
 	MissingCommand   = fmt.Errorf("missing command")
 )
 
-func TidyImports(a *Args) error {
+func TidyImports(args ...string) error {
+	a := NewArgs(args...)
+	if len(args) == 0 {
+		a = NewArgs(os.Args[1:]...)
+	}
 	if a.Ext != ".go" {
 		return InvalidExtension
 	}

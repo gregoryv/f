@@ -3,14 +3,14 @@ package main
 import (
 	"os"
 
-	"github.com/gregoryv/f"
+	fo "github.com/gregoryv/f"
 )
 
 func main() {
-	args := f.NewArgs(os.Args[1:]...)
-	var act f.Action
+	args := fo.NewArgs(os.Args[1:]...)
+	var act fo.Action
 	if args.UseAction(&act) != nil {
 		return
 	}
-	act(f.NewTerm())
+	act(fo.NewTerm())
 }

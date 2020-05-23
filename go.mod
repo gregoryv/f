@@ -1,4 +1,4 @@
-module github.com/gregoryv/f
+module github.com/gregoryv/fo
 
 go 1.13
 

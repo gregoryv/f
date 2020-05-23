@@ -1,4 +1,4 @@
-package fo
+package main
 
 import (
 	"fmt"

@@ -1,4 +1,4 @@
-package fo
+package main
 
 import (
 	"bytes"
@@ -58,13 +58,6 @@ func TestRunCmd(t *testing.T) {
 	ok, _k := assert(t)
 	ok(RunCmd(exec.Command("echo")))
 	_k(RunCmd(exec.Command("")))
-}
-
-func TestTidyImports(t *testing.T) {
-	ok, _k := assert(t)
-	ok(TidyImports("package.go"))
-	_k(TidyImports())
-	_k(TidyImports("file.txt"))
 }
 
 // ----------------------------------------

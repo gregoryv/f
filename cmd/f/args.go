@@ -1,6 +1,8 @@
-package fo
+package main
 
-import "path"
+import (
+	"path"
+)
 
 func NewArgs(in ...string) *Args {
 	a := Args{

@@ -1,4 +1,4 @@
-package f
+package fo
 
 import (
 	"io/ioutil"

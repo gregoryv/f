@@ -1,5 +1,5 @@
 /*
-Package f provides a terminal wrapper for my workflows.
+Package fo provides a terminal wrapper for my workflows.
 
   import . "github.com/gregoryv/f"
 
@@ -9,4 +9,4 @@ Package f provides a terminal wrapper for my workflows.
   }
 
 */
-package f
+package fo

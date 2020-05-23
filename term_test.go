@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
+	"os/exec"
 	"testing"
 
 	"github.com/gregoryv/fox"
@@ -48,8 +49,25 @@ func TestDefaultTerm(t *testing.T) {
 	DefaultTerm.Verbose = false //so below output doesn't show
 	Sh("whohooo ")
 	Sh("touch package.go")
-	Shf("%s %s", "touch", "package_test.go")
+	Shf("%s %s", "touch", "package.go")
 }
+
+// ----------------------------------------
+
+func TestRunCmd(t *testing.T) {
+	ok, _k := assert(t)
+	ok(RunCmd(exec.Command("echo")))
+	_k(RunCmd(exec.Command("")))
+}
+
+func TestTidyImports(t *testing.T) {
+	ok, _k := assert(t)
+	ok(TidyImports("package.go"))
+	_k(TidyImports())
+	_k(TidyImports("file.txt"))
+}
+
+// ----------------------------------------
 
 func silentLog(m *Term) error {
 	var buf bytes.Buffer

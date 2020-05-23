@@ -101,3 +101,53 @@ func Sh(cli string) error   { return DefaultTerm.Sh(cli) }
 func Shf(format string, args ...interface{}) error {
 	return DefaultTerm.Shf(format, args...)
 }
+
+// ----------------------------------------
+
+func RunCmd(cmd *exec.Cmd) error {
+	if cmd == nil || cmd.Path == "" {
+		return MissingCommand
+	}
+	return cmd.Run()
+}
+
+func Color(line *string, contains string) error {
+	found := (strings.Index(*line, contains) > -1)
+	if !found {
+		return Unchanged
+	}
+	*line = red + *line + reset
+	return nil
+}
+
+func Strip(line *string, part string) error {
+	stripped := strings.ReplaceAll(*line, part, "")
+	if stripped == *line {
+		return Unchanged
+	}
+	*line = stripped
+	return nil
+}
+
+var (
+	red   = "\033[31m"
+	reset = "\033[0m"
+)
+
+var (
+	Unchanged        = fmt.Errorf("unchanged")
+	InvalidExtension = fmt.Errorf("invalid extension")
+	NotFound         = fmt.Errorf("not found")
+	MissingCommand   = fmt.Errorf("missing command")
+)
+
+func TidyImports(args ...string) error {
+	a := NewArgs(args...)
+	if len(args) == 0 {
+		a = NewArgs(os.Args[1:]...)
+	}
+	if a.Ext != ".go" {
+		return InvalidExtension
+	}
+	return Shf("goimports -w %s", a.Path)
+}

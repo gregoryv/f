@@ -6,3 +6,4 @@ onchange.sh
 state.txt
 wip.go
 wip_test.go
+.onchange.sh

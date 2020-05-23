@@ -88,3 +88,16 @@ func (m *Term) adaptOutput(out []byte, liners []liner) {
 		fmt.Fprintln(m.output, s)
 	}
 }
+
+// ----------------------------------------
+
+var DefaultTerm = NewTerm()
+
+func NoExit()               { DefaultTerm.SetExit(func(int) {}) }
+func SetOutput(w io.Writer) { DefaultTerm.SetOutput(w) }
+func Verbose()              { DefaultTerm.Verbose = true }
+func Sh(cli string) error   { return DefaultTerm.Sh(cli) }
+
+func Shf(format string, args ...interface{}) error {
+	return DefaultTerm.Shf(format, args...)
+}

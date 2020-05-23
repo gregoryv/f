@@ -1,7 +1,6 @@
 package fo
 
 import (
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"testing"
@@ -38,14 +37,4 @@ func TestTidyImports(t *testing.T) {
 	ok(TidyImports("package_test.go"))
 	_k(TidyImports())
 	_k(TidyImports("file.txt"))
-}
-
-func TestDefaultTerm(t *testing.T) {
-	SetOutput(ioutil.Discard)
-	Verbose()
-	NoExit()
-	DefaultTerm.Verbose = false //so below output doesn't show
-	Sh("whohooo ")
-	Sh("touch package.go")
-	Shf("%s %s", "touch", "package_test.go")
 }

@@ -3,6 +3,7 @@ package fo
 import (
 	"bytes"
 	"fmt"
+	"io/ioutil"
 	"testing"
 
 	"github.com/gregoryv/fox"
@@ -38,6 +39,16 @@ func TestStrip(t *testing.T) {
 
 	line2 := "/home/john"
 	_k(Strip(&line2, "/etc"))
+}
+
+func TestDefaultTerm(t *testing.T) {
+	SetOutput(ioutil.Discard)
+	Verbose()
+	NoExit()
+	DefaultTerm.Verbose = false //so below output doesn't show
+	Sh("whohooo ")
+	Sh("touch package.go")
+	Shf("%s %s", "touch", "package_test.go")
 }
 
 func silentLog(m *Term) error {

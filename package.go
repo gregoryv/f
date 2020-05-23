@@ -7,13 +7,11 @@ Package fo provides a terminal wrapper for my workflows.
     Sh("echo Hello, world!")
     Shf("echo %s", "Hello, world!")
   }
-
 */
 package fo
 
 import (
 	"fmt"
-	"io"
 	"os"
 	"os/exec"
 	"path"
@@ -99,26 +97,4 @@ func TidyImports(args ...string) error {
 		return InvalidExtension
 	}
 	return Shf("goimports -w %s", a.Path)
-}
-
-var DefaultTerm = NewTerm()
-
-func Sh(cli string) error {
-	return DefaultTerm.Sh(cli)
-}
-
-func Shf(format string, args ...interface{}) error {
-	return DefaultTerm.Shf(format, args...)
-}
-
-func NoExit() {
-	DefaultTerm.SetExit(func(int) {})
-}
-
-func SetOutput(w io.Writer) {
-	DefaultTerm.SetOutput(w)
-}
-
-func Verbose() {
-	DefaultTerm.Verbose = true
 }

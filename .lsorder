@@ -3,6 +3,5 @@ term
 emacs
 args
 helper
-.mod
-.sum
 cmd
+go.

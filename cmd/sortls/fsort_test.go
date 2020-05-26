@@ -10,7 +10,7 @@ func ExampleFsortDir() {
 	// internal
 	// README
 	// changelog.md
-	// main.go
+	// file.txt
 }
 
 func ExampleFsort_simple_sort() {

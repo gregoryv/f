@@ -1,3 +1,5 @@
+// Command order sorts lines on stdin according to patterns in the
+// order file.
 package main
 
 import (

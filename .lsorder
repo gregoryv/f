@@ -1,7 +1,4 @@
 package
-term
-emacs
-args
-helper
+qa_
 cmd
 go.

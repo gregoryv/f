@@ -20,10 +20,14 @@ func main() {
 
 	order, err := ioutil.ReadFile(filename)
 	if err != nil {
+		// no order file
 		io.Copy(os.Stdout, os.Stdin)
 		return
 	}
+	// each line in the order file is a pattern
 	patterns := strings.Split(string(order), "\n")
+
+	// read stdin as lines
 	var content bytes.Buffer
 	io.Copy(&content, os.Stdin)
 	body := bytes.TrimSpace(content.Bytes())

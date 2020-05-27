@@ -30,11 +30,17 @@ type cli struct {
 }
 
 func (c *cli) run() {
+	if c.filename == "" {
+		io.Copy(c.Writer, c.Reader)
+		return
+	}
 	order, err := ioutil.ReadFile(c.filename)
 	if err != nil {
 		// no order file
-		io.Copy(c.Writer, c.Reader)
+		fmt.Fprintln(os.Stderr, err)
+		return
 	}
+
 	// each line in the order file is a pattern
 	patterns := strings.Split(string(order), "\n")
 

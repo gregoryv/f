@@ -37,7 +37,8 @@ func (c *cli) run() {
 	order, err := ioutil.ReadFile(c.filename)
 	if err != nil {
 		// no order file
-		fmt.Fprintln(os.Stderr, err)
+		//fmt.Fprintln(os.Stderr, err)
+		io.Copy(c.Writer, c.Reader)
 		return
 	}
 

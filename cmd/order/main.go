@@ -14,22 +14,33 @@ import (
 )
 
 func main() {
-	var filename string
-	flag.StringVar(&filename, "f", "", "order file")
+	c := &cli{
+		Writer: os.Stdout,
+		Reader: os.Stdin,
+	}
+	flag.StringVar(&c.filename, "f", "", "order file")
 	flag.Parse()
+	c.run()
+}
 
-	order, err := ioutil.ReadFile(filename)
+type cli struct {
+	io.Writer
+	io.Reader
+	filename string
+}
+
+func (c *cli) run() {
+	order, err := ioutil.ReadFile(c.filename)
 	if err != nil {
 		// no order file
-		io.Copy(os.Stdout, os.Stdin)
-		return
+		io.Copy(c.Writer, c.Reader)
 	}
 	// each line in the order file is a pattern
 	patterns := strings.Split(string(order), "\n")
 
 	// read stdin as lines
 	var content bytes.Buffer
-	io.Copy(&content, os.Stdin)
+	io.Copy(&content, c.Reader)
 	body := bytes.TrimSpace(content.Bytes())
 	lines := strings.Split(string(body), "\n")
 
@@ -38,7 +49,7 @@ func main() {
 		patterns: patterns,
 	})
 	for _, line := range lines {
-		fmt.Println(line)
+		fmt.Fprintln(c.Writer, line)
 	}
 }
 

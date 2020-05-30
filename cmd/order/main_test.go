@@ -18,7 +18,7 @@ func Test_cli_bad_filename(t *testing.T) {
 		filename: "no_such_file",
 	}
 	c.run()
-	exp := ""
+	exp := "a\nb\n"
 	if out.String() != exp {
 		t.Errorf("\ngot: %q\nexp: %q", out.String(), exp)
 	}
@@ -40,24 +40,21 @@ func Test_cli_passthrough(t *testing.T) {
 }
 
 func Test_cli(t *testing.T) {
-	var out bytes.Buffer
+	patterns := "intern.*\n.*ADME\nchangelog.md"
 	tmp, _ := ioutil.TempFile("", "order")
-	exp := `internal
-README
-changelog.md
-file.txt
-`
-	tmp.WriteString(exp)
+	tmp.WriteString(patterns)
 	tmp.Close()
 	defer os.RemoveAll(tmp.Name())
+	exp := "internal\nREADME\nchangelog.md\nfile.txt\n"
+	var out bytes.Buffer
 	c := &cli{
 		Writer:   &out,
-		Reader:   strings.NewReader("internal\nREADME\nchangelog.md\nfile.txt\n"),
+		Reader:   strings.NewReader(exp),
 		filename: tmp.Name(),
 	}
 	c.run()
 	if out.String() != exp {
-		t.Error(out.String())
+		t.Errorf("\npatterns: %q\n\ngot:\n%s\nexp:\n%s", patterns, out.String(), exp)
 	}
 }
 

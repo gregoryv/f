@@ -9,6 +9,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"regexp"
 	"sort"
 	"strings"
 )
@@ -24,9 +25,9 @@ func main() {
 }
 
 type cli struct {
-	io.Writer
-	io.Reader
-	filename string
+	io.Writer        // output of sorted stream
+	io.Reader        // stream to sort
+	filename  string // order file with patterns
 }
 
 func (c *cli) run() {
@@ -71,7 +72,7 @@ func (b ByPattern) Less(i, j int) bool {
 
 func (b ByPattern) patternIndex(lineIndex int) int {
 	for i, pattern := range b.patterns {
-		if strings.Index(b.lines[lineIndex], pattern) > -1 {
+		if match, _ := regexp.MatchString(pattern, b.lines[lineIndex]); match {
 			return i
 		}
 	}
